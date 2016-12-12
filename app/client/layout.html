@@ -1,0 +1,17 @@
+<template name="layout">
+  <div class="container-fluid layout">
+    {{> header}}
+    <div class="row">
+      <div id="content" class="page-animated">
+        <div class="sidebar-content">
+          {{> yield "sidebar-content"}}
+        </div>
+        <div class="main-content">
+          {{> yield}}
+        </div>
+      </div>
+    </div>
+    {{> yield "footer"}}
+    {{> footer}}
+  </div>
+</template>
