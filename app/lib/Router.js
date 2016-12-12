@@ -10,4 +10,16 @@ Router.configure({
   },
 });
 
-Router.route('player-numbers');
+Router.route('/', {
+  name: 'home',
+  action: function () {
+     if(!Session.get('CurrentGame')){
+       return Router.go('game-setup');
+     }else{
+       return Router.go('controls');
+     }
+   }
+});
+
+Router.route('controls');
+Router.route('game-setup');
