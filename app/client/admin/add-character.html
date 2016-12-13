@@ -1,0 +1,59 @@
+<template name="AddCharacter">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+      {{#autoForm collection="Characters" id="insertCharacterForm" type="insert"}}
+        <div class="row">
+          <div class="col-sm-4">
+            {{> afQuickField name='name'}}
+          </div>
+          <div class="col-sm-2">
+            {{> afQuickField name='maxHealth'}}
+          </div>
+          <div class="col-sm-2">
+            {{> afQuickField name='actions'}}
+          </div>
+          <div class="col-sm-2">
+            {{> afQuickField name='dodge'}}
+          </div>
+          <div class="col-sm-2">
+            {{> afQuickField name='armor'}}
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-sm-12">
+            <label>Types</label>
+            <div class="row">
+            {{#afEachArrayItem name="types"}}
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-primary autoform-remove-item"><span class="glyphicon glyphicon-minus"></span></button>
+                {{> afFieldInput name=this.current.type}}
+              </div>
+            {{/afEachArrayItem}}
+            <button type="button" class="btn btn-primary autoform-add-item" data-autoform-field="types"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <label>Immunities</label>
+            <div class="row">
+            {{#afEachArrayItem name="immunities"}}
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-primary autoform-remove-item"><span class="glyphicon glyphicon-minus"></span></button>
+                {{> afFieldInput name=this.current.immunity}}
+              </div>
+            {{/afEachArrayItem}}
+            <button type="button" class="btn btn-primary autoform-add-item" data-autoform-field="immunities"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+          </div>
+        </div>
+
+      {{/autoForm}}
+    </div>
+  </div>
+  </div>
+</template>

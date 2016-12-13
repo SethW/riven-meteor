@@ -1,0 +1,27 @@
+---
+_id: 'saint-pyros'
+name: 'Saint Pyros'
+maxHealth: 100
+actions: 3
+movement: 6
+dodge: 20
+armor: 2
+types:
+- type: 'ground'
+- type: 'holy'
+immunities:
+attacks:
+  - _id: "fire-sword"
+    name: "Fire Sword"
+    range: 0
+    status: "active"
+    actions: 1
+    area: 0
+    accuracy: 10
+    effects:
+    types:
+    power:
+      - options: '1,2,3,4,5,6'
+        multiplier: 2
+      - options: '1'
+        multiplier: 1
