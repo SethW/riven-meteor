@@ -12,16 +12,16 @@ Router.configure({
 
 Router.route('/', {
   name: 'home',
-  action: function () {
+  /*action: function () {
      if(!Session.get('CurrentGame')){
        return Router.go('game-setup');
      }else{
        return Router.go('controls');
      }
-   }
+   }*/
 });
 
-Router.route('controls');
+Router.route('player-numbers');
 Router.route('game-setup');
 Router.route('show-character', {
   name: 'show-character',
@@ -31,6 +31,6 @@ Router.route('show-character', {
 });
 
 
-Router.route('add-character', {
-  name: 'add-character',
+Router.route('add-characters', {
+  name: 'add-characters',
 });

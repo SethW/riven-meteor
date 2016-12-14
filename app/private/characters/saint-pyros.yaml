@@ -7,8 +7,8 @@ movement: 6
 dodge: 20
 armor: 2
 types:
-- type: 'ground'
-- type: 'holy'
+  - ground
+  - holy
 immunities:
 attacks:
   - _id: "fire-sword"
@@ -25,3 +25,30 @@ attacks:
         multiplier: 2
       - options: '1'
         multiplier: 1
+abilities:
+  - _id: "healing-warmth"
+    name: Healing Warmth
+    range: 0
+    status: "active"
+    actions: 2
+    area: 0
+    accuracy: 90
+    effects:
+    types:
+      - friendly
+      - heal
+    power:
+      - options: "1,2,3"
+        multiplier: 3
+conditions:
+  - type: "stat"
+    key: "health"
+    compare: "<="
+    value: "80"
+    results:
+      movement: 5
+      attacks:
+        - _id: "fire-sword"
+          power:
+            - options: 1,2,3,4,5,6
+              multiplier: 1

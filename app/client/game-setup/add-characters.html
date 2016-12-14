@@ -1,0 +1,19 @@
+<template name="AddCharacters">
+  <form id="add-characters">
+    <label for="player-number">Which player is this for?</label>
+    <select name="player-number" id="player-number">
+      {{#each loop (SessionGet 'numberOfPlayers') }}
+        <option value="{{this}}">Player {{this}}</option>
+      {{/each}}
+    </select>
+    <br/>
+    <label for="character-id">Character ID</label>
+    <input type="text" name="character-id" id="character-id" />
+    <br/>
+    <label for="character-label">Character Label</label>
+    <input type="text" name="character-label" id="character-Label" />
+    <br/>
+    <input type="submit" value="Add" />
+    <div class="form-message"></div>
+  </form>
+</template>

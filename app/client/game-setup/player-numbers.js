@@ -5,7 +5,10 @@ Template.PlayerNumbers.events({
     var numberOfPlayers = $form.find('#player-numbers').val();
     if(!isNaN(numberOfPlayers) && numberOfPlayers >= 2){
       $form.find('.form-message').html("Yay");
-      Session.set('numberOfPlayers', numberOfPlayers);
+      CurrentGame = Session.get('CurrentGame');
+      for(var p = 1; p <= numberOfPlayers; p++){
+        CurrentGame.addPlayer(Player(p));
+      }
     }else{
       $form.find('.form-message').html("Sorry, thats not valid");
     }
