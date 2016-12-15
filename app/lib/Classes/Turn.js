@@ -37,6 +37,7 @@ Turn = {
       if(character){
         if(character.health > 0){
           this.activeCharacter = character;
+          this.activeCharacter.stats.activateCount++;
 		      this.actionCount = character.actions;
           this.message = 'Activated '+character.characterLabel;
           this.step = 'activate';
@@ -49,7 +50,49 @@ Turn = {
     }
     Session.set('TurnData', this);
   },
-  takeAction: function () {
+  takeAction: function (command) {
+    if(FilterInput(command)){
+      var action = this.activeCharacter.findAction(command);
+      if(action){
+        if(action.status === 'active'){
+          if(action.actions <= self.actionCount){
+            var range;
+            if(action.range > 0){
+              if(command.search('range') >= 0){
+                range = command.split('range ');
+                range = range[0].split(' ');
+                range = parseInt(range[0]);
+              }else{
+                this.message = 'This action requires a range';
+                return;
+              }
+            }else{
+              range = 0;
+            }
+
+            if(range <= action.range){
+              var targets = Game.findTargets(command);
+              if(targets.length >= 1){
+                this.activeCharacter.attack(action, targets, {range: range});
+                this.actionCount = this.actionCount - action.actions;
+              }else{
+                this.message = 'No targets round';
+              }
+
+            }else{
+              this.message = 'The target is out of range';
+            }
+
+          }else{
+            this.message = 'That action costs too much';
+          }
+        }else{
+          this.message = 'That action is currently unavailable';
+        }
+      }else{
+        this.message = 'Sorry, couldn\'t find that action';
+      }
+    }
     Session.set('TurnData', this);
   },
   finish: function () {

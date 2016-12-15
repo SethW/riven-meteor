@@ -4,13 +4,13 @@ Character = function Character(characterId, characterLabel, data){
 	character.characterLabel = characterLabel;
 
   character.stats = {};
-	character.stats.kill_count = 0;
-	character.stats.hit_count = 0;
-	character.stats.miss_count = 0;
-	character.stats.dodge_count = 0;
-	character.stats.activate_count = 0;
-	character.stats.healed_count = 0;
-	character.stats.heal_count = 0;
+	character.stats.killCount = 0;
+	character.stats.hitCount = 0;
+	character.stats.missCount = 0;
+	character.stats.dodgeCount = 0;
+	character.stats.activateCount = 0;
+	character.stats.healedCount = 0;
+	character.stats.healCount = 0;
 
 
 	character.health = data.maxHealth;
@@ -32,6 +32,17 @@ Character = function Character(characterId, characterLabel, data){
 
 
   character.findAction = function(actionString){
+    for(var at = 0; a < self.attacks.length; at++){
+      if(actionString.search(self.attacks[at].name) !== -1){
+        return self.attacks[at];
+      }
+    }
+
+    for(var ab = 0; a < self.abilities.length; ab++){
+      if(actionString.search(self.abilities[ab].name) !== -1){
+        return self.abilities[ab];
+      }
+    }
 
   };
 

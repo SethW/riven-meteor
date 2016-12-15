@@ -13,8 +13,8 @@ types:
   - human
 immunities:
 attacks:
-  - _id: arrows
-    name: Arrows
+  - _id: shoot
+    name: Shoot
     range: 8
     status: "active"
     actions: 1
@@ -62,7 +62,7 @@ conditions:
     value: "55"
     results:
       attacks:
-        - _id: arrows
+        - _id: shoot
           accuracy: 10
           power:
             - options: '0,2,4,6,8'
@@ -78,7 +78,7 @@ conditions:
     value: "30"
     results:
       attacks:
-        - _id: arrows
+        - _id: shoot
           accuracy: 10
           power:
             - options: '0,2,4,6'

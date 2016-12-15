@@ -23,6 +23,17 @@ Game = {
       }
     }
   },
+  findTargets: function(command){
+    var targets = [];
+    for(var p = 0; p < this.players.length; p++){
+      for(var c = 0; c < this.players[p].characters.length; c++){
+        if(command.search(this.players[p].characters[c].characterLabel) !== -1){
+          targets.push(this.players[p].characters[c]);
+        }
+      }
+    }
+    return targets;
+  },
   addCharacter: function(playerId, character){
     this.players[playerId].addCharacter(character);
     Session.set('GameData', this);
