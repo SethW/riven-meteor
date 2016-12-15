@@ -224,7 +224,10 @@ Schema.Characters = new SimpleSchema({
   name: {
     type: String,
     label: "Name",
-    max: 200
+  },
+  value: {
+    type: Number,
+    label: "Value",
   },
   maxHealth: {
     type: Number,

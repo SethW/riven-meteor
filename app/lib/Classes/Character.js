@@ -30,5 +30,23 @@ Character = function Character(characterId, characterLabel, data){
 
 	character.effects = [];
 
+
+  character.findAction = function(actionString){
+
+  };
+
   return character;
 };
+
+if( typeof CurrentGame !== 'undefined'){
+  // Load player functions
+  for(var p = 0; p < CurrentGame.players.length; p++){
+
+    for(var c = 0; c < CurrentGame.players[p].characters; c++){
+
+
+
+    }
+
+  }
+}

@@ -1,0 +1,108 @@
+---
+_id: goodwin-paladin
+name: Goodwin Paladin
+value: 15
+maxHealth: 100
+actions: 3
+movement: 6
+dodge: 15
+armor: 5
+types:
+  - human
+  - ground
+  - melee
+immunities:
+attacks:
+  - _id: stab
+    name: Stab
+    range: 0
+    status: "active"
+    actions: 1
+    area: 0
+    accuracy: 15
+    effects:
+    types:
+      - melee
+    power:
+      - options: '2,4,6,8'
+        multiplier: 2
+      - options: '1'
+        multiplier: 1
+  - _id: smite
+    name: Smite
+    range: 0
+    status: "active"
+    actions: 2
+    area: 0
+    accuracy: 20
+    effects:
+      - fire
+      - knockdown
+    types:
+      - melee
+    power:
+      - options: '2,4,6,8'
+        multiplier: 3
+      - options: '2'
+        multiplier: 1
+abilities:
+  - _id: heal
+    name: Heal
+    range: 0
+    status: "active"
+    actions: 2
+    area: 0
+    accuracy: 85
+    effects:
+    types:
+      - friendly
+      - heal
+      - remedy
+    power:
+      - options: "1"
+        multiplier: 1
+conditions:
+  - type: "stat"
+    key: "health"
+    compare: "<="
+    value: "80"
+    results:
+      attacks:
+        - _id: smite
+          accuracy: 15
+          power:
+            - options: '2,4,6,8'
+              multiplier: 3
+            - options: '1'
+              multiplier: 1
+  - type: "stat"
+    key: "health"
+    compare: "<="
+    value: "37"
+    results:
+      abilities:
+        - _id: heal
+          accuracy: 55
+      attacks:
+        - _id: stab
+          accuracy: 10
+          power:
+            - options: '2,4,6'
+              multiplier: 3
+            - options: '1'
+              multiplier: 1
+        - _id: smite
+          accuracy: 10
+          power:
+            - options: '2,4,6,8'
+              multiplier: 3
+            - options: '1'
+              multiplier: 1
+  - type: "stat"
+    key: "health"
+    compare: "<="
+    value: "20"
+    results:
+      abilities:
+        - _id: heal
+          actions: 3

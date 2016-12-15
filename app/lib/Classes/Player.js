@@ -8,7 +8,11 @@ Player = function Player(id){
   };
 
   player.findCharacter = function(characterLabel){
-
+    for(var c = 0; c < this.characters.length; c++){
+      if(this.characters[c].characterLabel === characterLabel){
+        return this.characters[c];
+      }
+    }
   };
 
   return player;

@@ -1,6 +1,7 @@
 ---
 _id: 'saint-pyros'
 name: 'Saint Pyros'
+value: 15
 maxHealth: 100
 actions: 3
 movement: 6

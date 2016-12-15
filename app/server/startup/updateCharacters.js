@@ -1,6 +1,9 @@
 Meteor.startup(function () {
   var characterFiles = [
     'characters/saint-pyros.yaml',
+    'characters/dusk-ranger.yaml',
+    'characters/starfire.yaml',
+    'characters/goodwin-paladin.yaml',
   ];
   var yaml = require('yaml-js');
   characterFiles.forEach(function(characterFile) {

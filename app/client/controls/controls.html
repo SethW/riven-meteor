@@ -1,3 +1,8 @@
 <template name="controls">
   <h2>Run your game here</h2>
+  <form id="game-control">
+    <input type="text" name="controller" id="controller" />
+    <input type="submit" value="Go" />
+    <div class="form-message">{{ formMessage }}</div>
+  </form>
 </template>

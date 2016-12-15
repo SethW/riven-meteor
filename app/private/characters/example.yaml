@@ -1,0 +1,48 @@
+---
+_id:
+name:
+value: 15
+maxHealth: 100
+actions:
+movement:
+dodge:
+armor:
+types:
+immunities:
+attacks:
+  - _id:
+    name:
+    range: 0
+    status: "active"
+    actions:
+    area:
+    accuracy:
+    effects:
+    types:
+    power:
+      - options: '1'
+        multiplier: 1
+abilities:
+  - _id:
+    name:
+    range: 0
+    status: "active"
+    actions:
+    area:
+    accuracy:
+    effects:
+    types:
+    power:
+      - options: "1"
+        multiplier: 1
+conditions:
+  - type: "stat"
+    key: "health"
+    compare: "<="
+    value: "80"
+    results:
+      attacks:
+        - _id:
+          power:
+            - options: 1,2,3,4,5,6
+              multiplier: 1

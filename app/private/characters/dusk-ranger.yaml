@@ -1,0 +1,90 @@
+---
+_id: dusk-ranger
+name: Dusk Ranger
+value: 15
+maxHealth: 80
+actions: 3
+movement: 7
+dodge: 30
+armor: 1
+types:
+  - ground
+  - ranged
+  - human
+immunities:
+attacks:
+  - _id: arrows
+    name: Arrows
+    range: 8
+    status: "active"
+    actions: 1
+    area: 0
+    accuracy: 18
+    effects:
+    types:
+      - ranged
+    power:
+      - options: '0,2,4,6,8'
+        multiplier: 3
+  - _id: sparkle-burst
+    name: Sparkle Burst
+    range: 8
+    status: "active"
+    actions: 2
+    area: 2
+    accuracy: 13
+    effects:
+    types:
+      - ranged
+      - area
+    power:
+      - options: '0,2,4,6'
+        multiplier: 3
+abilities:
+  - _id: herbalist
+    name: Herbalist
+    range: 3
+    status: "active"
+    actions: 1
+    area: 0
+    accuracy: 60
+    effects:
+    types:
+      - friendly
+      - remedy
+    power:
+      - options: "1"
+        multiplier: 1
+conditions:
+  - type: "stat"
+    key: "health"
+    compare: "<="
+    value: "55"
+    results:
+      attacks:
+        - _id: arrows
+          accuracy: 10
+          power:
+            - options: '0,2,4,6,8'
+              multiplier: 3
+        - _id: sparkle-burst
+          accuracy: 5
+          power:
+            - options: '0,2,4,6'
+              multiplier: 3
+  - type: "stat"
+    key: "health"
+    compare: "<="
+    value: "30"
+    results:
+      attacks:
+        - _id: arrows
+          accuracy: 10
+          power:
+            - options: '0,2,4,6'
+              multiplier: 3
+        - _id: sparkle-burst
+          accuracy: 5
+          power:
+            - options: '0,2,4'
+              multiplier: 3

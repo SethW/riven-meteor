@@ -1,0 +1,77 @@
+---
+_id: starfire
+name: Starfire
+value: 40
+maxHealth: 120
+actions: 4
+movement: 6
+dodge: 20
+armor: 8
+types:
+  - ground
+  - fly
+  - dragon
+  - monster
+  - elite
+  - ranged
+  - melee
+immunities:
+  - fire
+attacks:
+  - _id: slash
+    name: Slash
+    range: 0
+    status: "active"
+    actions: 1
+    area: 0
+    accuracy: 15
+    effects:
+    types:
+      - melee
+    power:
+      - options: '0,4,8,10,12'
+        multiplier: 2
+  - _id: dragon-breath
+    name: Dragon Breath
+    range: 3
+    status: "active"
+    actions: 2
+    area: 3
+    accuracy: 25
+    effects:
+      - fire
+    types:
+      - ranged
+    power:
+      - options: '0,4,8,10'
+        multiplier: 2
+  - _id: tail-sweep
+    name: Tail Sweep
+    range: 3
+    status: "active"
+    actions: 2
+    area: 3
+    accuracy: 10
+    effects:
+    types:
+      - ranged
+    power:
+      - options: '2,8,10'
+        multiplier: 2
+abilities:
+conditions:
+  - type: "stat"
+    key: "health"
+    compare: "<="
+    value: "50"
+    results:
+      actions: 5
+      attacks:
+        - _id: slash
+          power:
+            - options: '0,4,8,10,10'
+              multiplier: 2
+        - _id: tail-sweep
+          power:
+            - options: '0,4,8,8'
+              multiplier: 2
