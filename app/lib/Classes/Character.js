@@ -46,6 +46,10 @@ Character = function Character(characterId, characterLabel, data){
 
   };
 
+  character.attack = function(action, targets, modifiers){
+    console.log('Attack!');
+  };
+
   return character;
 };
 

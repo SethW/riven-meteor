@@ -1,34 +1,17 @@
 Turn = {
   activeCharacter: false,
-  turnSteps: ['init','activate', 'takeAction', 'finish'],
+  turnSteps: ['init','activate', 'finish'],
   step: 'init',
 	action: false,
 	actionCount: 0,
   message: '',
-  loadStep: function (nextStep) {
-    this[nextStep]();
-    Session.set('TurnData', this);
-  },
-  stepBack: function () {
-    var stepPosition = this.turnSteps.indexOf(this.step);
-    if(stepPosition > 0){
-      this.loadStep(this.turnSteps[stepPosition - 1]);
-    }else{
-      this.stepAgain();
-    }
-    Session.set('TurnData', this);
-  },
-  stepForward: function () {
-    var stepPosition = this.turnSteps.indexOf(this.step);
-    if(stepPosition < (this.turnSteps.length - 1)){
-      this.loadStep(this.turnSteps[stepPosition + 1]);
-    }else{
-      this.stepAgain();
-    }
-    Session.set('TurnData', this);
-  },
-  stepAgain: function () {
-    this.loadStep(this.step);
+  reset: function(){
+    this.activeCharacter = false;
+    this.turnSteps = ['init','activate', 'takeAction', 'finish'];
+    this.step = 'init';
+  	this.action = false;
+  	this.actionCount = 0;
+    this.log = '';
     Session.set('TurnData', this);
   },
   activate: function (command) {
@@ -39,31 +22,32 @@ Turn = {
           this.activeCharacter = character;
           this.activeCharacter.stats.activateCount++;
 		      this.actionCount = character.actions;
-          this.message = 'Activated '+character.characterLabel;
+          this.log = 'Activated '+character.characterLabel;
           this.step = 'activate';
         }else{
-          this.message = 'Sorry, that character is no longer with us';
+          this.log = this.log + '<br/>Sorry, that character is no longer with us';
         }
       }else{
-        this.message = 'Sorry, couldn\'t find that character';
+        this.log = this.log + '<br/>Sorry, couldn\'t find that character';
       }
     }
     Session.set('TurnData', this);
   },
   takeAction: function (command) {
     if(FilterInput(command)){
-      var action = this.activeCharacter.findAction(command);
+      var action = Game.characterFindAttack(this.activeCharacter, command);
       if(action){
         if(action.status === 'active'){
-          if(action.actions <= self.actionCount){
+          if(action.actions <= this.actionCount){
             var range;
             if(action.range > 0){
               if(command.search('range') >= 0){
-                range = command.split('range ');
-                range = range[0].split(' ');
-                range = parseInt(range[0]);
+                range = command.split('range');
+                range = range[1].split(' ');
+                range = parseInt(range[1]);
               }else{
-                this.message = 'This action requires a range';
+                this.log = this.log + '<br/>This action requires a range';
+                Session.set('TurnData', this);
                 return;
               }
             }else{
@@ -73,34 +57,38 @@ Turn = {
             if(range <= action.range){
               var targets = Game.findTargets(command);
               if(targets.length >= 1){
-                this.activeCharacter.attack(action, targets, {range: range});
+                console.log('Action validated');
+                Game.characterAttack(this.activeCharacter, action, targets, {range: range});
                 this.actionCount = this.actionCount - action.actions;
               }else{
-                this.message = 'No targets round';
+                this.log = this.log + '<br/>No targets round';
               }
 
             }else{
-              this.message = 'The target is out of range';
+              this.log = this.log + '<br/>The target is out of range';
             }
 
           }else{
-            this.message = 'That action costs too much';
+            this.log = this.log + '<br/>That action costs too much';
           }
         }else{
-          this.message = 'That action is currently unavailable';
+          this.log = this.log + '<br/>That action is currently unavailable';
         }
       }else{
-        this.message = 'Sorry, couldn\'t find that action';
+        this.log = this.log + '<br/>Sorry, couldn\'t find that action';
       }
+    }
+    if(this.actionCount <=0 ){
+      this.finish();
     }
     Session.set('TurnData', this);
   },
   finish: function () {
     this.activeCharacter = false;
-    this.turnSteps = ['init','activate', 'takeAction', 'finish'];
+    this.turnSteps = ['init','activate', 'finish'];
     this.step = 'init';
     this.action = false;
-    this.action_count = 0;
+    this.actionCount = 0;
     Session.set('TurnData', this);
   }
 };

@@ -1,8 +1,34 @@
 <template name="controls">
-  <h2>Run your game here</h2>
-  <form id="game-control">
-    <input type="text" name="controller" id="controller" />
-    <input type="submit" value="Go" />
-    <div class="form-message">{{ formMessage }}</div>
-  </form>
+  <div class="row">
+    <div class="col-sm-4">
+      <h2>Controller</h2>
+      <form id="game-control">
+        <div class="current-step">{{ currentStep }}</div>
+        <div class="active-character">Active Character: {{ activeCharacter }}</div>
+        <div class="actions-remaining">Actions Remaining: {{ actionsRemaining }}</div>
+        <input type="text" name="controller" id="controller" />
+        <input type="submit" value="Go" />
+        <div class="turn-log">{{{ turnLog }}}</div>
+      </form>
+    </div>
+    <div class="col-sm-6">
+      <h2>Stats</h2>
+      {{#each getPlayers }}
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>Player {{ id }}'s Characters</h3>
+          <div class="row">
+            {{#each characters }}
+              <div class="col-sm-4">
+                {{> CharacterStats this }}
+              </div>
+            {{/each}}
+          </div>
+          <br/>
+          <br/>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
 </template>

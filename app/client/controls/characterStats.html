@@ -1,0 +1,50 @@
+<template name="CharacterStats">
+  {{log this}}
+  <h3>{{ characterLabel }}</h3>
+  <h6>Health: {{ health }}</h6>
+  <h6>Actions: {{ actions }}</h6>
+  <h6>Movement: {{ movement }}</h6>
+  <h6>Dodge: {{ dodge }}</h6>
+  <h6>Armor: {{ armor }}</h6>
+  <br/>
+  <h4>Attacks</h4>
+  <div class="indent">
+    {{#each attacks}}
+      <h5>{{ name }}</h5>
+      <h6>Status: {{ status }}</h6>
+      <h6>costs: {{ actions }}</h6>
+      <h6>Range: {{ range }}</h6>
+      <h6>Area: {{ area }}</h6>
+      <h6>Accuracy: {{ accuracy }}</h6>
+      <h6>Power:</h6>
+      <div class="indent">
+        {{#each power}}
+          <h6>Dice: {{ options }} x{{ multipler }}</h6>
+        {{/each}}
+      </div>
+      <br/>
+    {{/each}}
+  </div>
+  <br/>
+  <h4>Abilities</h4>
+  <div class="indent">
+    {{#each abilities}}
+      <h5>{{ name }}</h5>
+      <h6>Status: {{ status }}</h6>
+      <h6>costs: {{ actions }}</h6>
+      <h6>Range: {{ range }}</h6>
+      <h6>Area: {{ area }}</h6>
+      <h6>Accuracy: {{ accuracy }}</h6>
+      <h6>Type:</h6>
+      {{#each types}}
+        <p>{{ this }}</p>
+      {{/each}}
+      <h6>Power:</h6>
+      <div class="indent">
+        {{#each power}}
+          <h6>Dice: {{ options }} x{{ multipler }}</h6>
+        {{/each}}
+      </div>
+    {{/each}}
+  </div>
+</template>
