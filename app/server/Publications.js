@@ -2,3 +2,7 @@
 Meteor.publish('allCharacters', function() {
   return Characters.find();
 });
+
+Meteor.publish('allEffects', function() {
+  return Effects.find();
+});

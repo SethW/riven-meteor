@@ -1,0 +1,15 @@
+---
+_id: fire
+name: Fire
+removeCosts: 2
+start:
+  - key: health
+    operation: '-'
+    value: 2
+activate:
+  - key: health
+    operation: '-'
+    value: 2
+action:
+finish:
+end:

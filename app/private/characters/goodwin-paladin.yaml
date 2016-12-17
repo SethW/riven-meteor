@@ -59,7 +59,9 @@ abilities:
       - heal
       - remedy
     power:
-      - options: "1"
+      - options: "0,4,6"
+        multiplier: 1
+      - options: "1,2"
         multiplier: 1
 conditions:
   - type: "stat"

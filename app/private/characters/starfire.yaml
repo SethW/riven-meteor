@@ -26,6 +26,7 @@ attacks:
     area: 0
     accuracy: 15
     effects:
+      - fire
     types:
       - melee
     power:

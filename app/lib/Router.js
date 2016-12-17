@@ -6,6 +6,7 @@ Router.configure({
   waitOn: function() {  // These will be available to all routes
     return [
       Meteor.subscribe('allCharacters'),
+      Meteor.subscribe('allEffects'),
     ];
   },
 });

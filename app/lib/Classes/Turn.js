@@ -24,6 +24,13 @@ Turn = {
 		      this.actionCount = character.actions;
           this.log = 'Activated '+character.characterLabel;
           this.step = 'activate';
+          console.log(this.activeCharacter.effects);
+          if(typeof this.activeCharacter.effects !== undefined){
+            console.log('Has effects');
+            for(var e = 0; e < this.activeCharacter.effects.length; e++){
+              Game.characterProcessEffect(this.activeCharacter, this.activeCharacter.effects[e].activate);
+            }
+          }
         }else{
           this.log = this.log + '<br/>Sorry, that character is no longer with us';
         }
@@ -31,6 +38,7 @@ Turn = {
         this.log = this.log + '<br/>Sorry, couldn\'t find that character';
       }
     }
+    Session.set('GameData', Game);
     Session.set('TurnData', this);
   },
   takeAction: function (command) {
@@ -59,6 +67,11 @@ Turn = {
               if(targets.length >= 1){
                 console.log('Action validated');
                 Game.characterAttack(this.activeCharacter, action, targets, {range: range});
+                if(typeof this.activeCharacter.effects !== undefined){
+                  for(var e = 0; e < this.activeCharacter.effects.length; e++){
+                    Game.characterProcessEffect(this.activeCharacter, this.activeCharacter.effects[e].activate);
+                  }
+                }
                 this.actionCount = this.actionCount - action.actions;
               }else{
                 this.log = this.log + '<br/>No targets round';
@@ -82,14 +95,22 @@ Turn = {
       this.finish();
     }
     Session.set('TurnData', this);
+    Session.set('GameData', Game);
   },
   finish: function () {
+    if(typeof this.activeCharacter.effects !== undefined){
+      for(var e = 0; e < this.activeCharacter.effects.length; e++){
+        Game.characterProcessEffect(this.activeCharacter, this.activeCharacter.effects[e].activate);
+      }
+    }
     this.activeCharacter = false;
     this.turnSteps = ['init','activate', 'finish'];
     this.step = 'init';
     this.action = false;
     this.actionCount = 0;
+    this.log = this.log + '<br/>Finished turn';
     Session.set('TurnData', this);
+    Session.set('GameData', Game);
   }
 };
 
