@@ -56,35 +56,39 @@ abilities:
       - options: "1"
         multiplier: 1
 conditions:
-  - type: "stat"
+  - id: 0
+    type: "stat"
     key: "health"
     compare: "<="
     value: "55"
     results:
       attacks:
         - _id: shoot
-          accuracy: 10
+          accuracy:
+              operation: "-"
+              value: 8
           power:
             - options: '0,2,4,6,8'
               multiplier: 3
         - _id: sparkle-burst
-          accuracy: 5
+          accuracy:
+            operation: "-"
+            value: 8
           power:
             - options: '0,2,4,6'
               multiplier: 3
-  - type: "stat"
+  - id: 1
+    type: "stat"
     key: "health"
     compare: "<="
     value: "30"
     results:
       attacks:
         - _id: shoot
-          accuracy: 10
           power:
             - options: '0,2,4,6'
               multiplier: 3
         - _id: sparkle-burst
-          accuracy: 5
           power:
             - options: '0,2,4'
               multiplier: 3

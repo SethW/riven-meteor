@@ -64,37 +64,47 @@ abilities:
       - options: "1,2"
         multiplier: 1
 conditions:
-  - type: "stat"
+  - id: 0
+    type: "stat"
     key: "health"
     compare: "<="
     value: "80"
     results:
       attacks:
         - _id: smite
-          accuracy: 15
+          accuracy:
+            operation: "-"
+            value: 5
           power:
             - options: '2,4,6,8'
               multiplier: 3
             - options: '1'
               multiplier: 1
-  - type: "stat"
+  - id: 1
+    type: "stat"
     key: "health"
     compare: "<="
     value: "37"
     results:
       abilities:
         - _id: heal
-          accuracy: 55
+          accuracy:
+            operation: "-"
+            value: 30
       attacks:
         - _id: stab
-          accuracy: 10
+          accuracy:
+            operation: "-"
+            value: 5
           power:
             - options: '2,4,6'
               multiplier: 3
             - options: '1'
               multiplier: 1
         - _id: smite
-          accuracy: 10
+          accuracy:
+            operation: "-"
+            value: 5
           power:
             - options: '2,4,6,8'
               multiplier: 3
@@ -107,4 +117,6 @@ conditions:
     results:
       abilities:
         - _id: heal
-          actions: 3
+          actions:
+            operation: "+"
+            value: 1

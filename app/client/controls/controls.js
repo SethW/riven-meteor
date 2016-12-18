@@ -36,9 +36,9 @@ Template.controls.events({
     var command = $form.find('#controller').val();
     $form.find('#controller').val('');
     if(Turn.step === 'init'){
-      console.log(Turn.activate(command));
+      Turn.activate(command);
     }else if(Turn.step === 'activate'){
-      console.log(Turn.takeAction(command));
+      Turn.takeAction(command);
     }
   },
 });

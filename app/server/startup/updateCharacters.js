@@ -1,6 +1,5 @@
 Meteor.startup(function () {
   var characterFiles = [
-    'characters/saint-pyros.yaml',
     'characters/dusk-ranger.yaml',
     'characters/starfire.yaml',
     'characters/goodwin-paladin.yaml',

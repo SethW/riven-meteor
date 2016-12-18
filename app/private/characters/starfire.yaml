@@ -61,12 +61,15 @@ attacks:
         multiplier: 2
 abilities:
 conditions:
-  - type: "stat"
+  - id: 0
+    type: "stat"
     key: "health"
     compare: "<="
     value: "50"
     results:
-      actions: 5
+      actions:
+        operation: "+"
+        value: 1
       attacks:
         - _id: slash
           power:

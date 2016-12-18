@@ -46,15 +46,19 @@ Game = {
 
 
   characterFindAttack: function(character, inputString){
-    for(var at = 0; at < character.attacks.length; at++){
-      if(inputString.search(character.attacks[at].name) !== -1){
-        return character.attacks[at];
+    if(character.attacks !== undefined){
+      for(var at = 0; at < character.attacks.length; at++){
+        if(inputString.search(character.attacks[at].name) !== -1){
+          return character.attacks[at];
+        }
       }
     }
 
-    for(var ab = 0; ab < character.abilities.length; ab++){
-      if(inputString.search(character.abilities[ab].name) !== -1){
-        return character.abilities[ab];
+    if(character.abilities !== undefined){
+      for(var ab = 0; ab < character.abilities.length; ab++){
+        if(inputString.search(character.abilities[ab].name) !== -1){
+          return character.abilities[ab];
+        }
       }
     }
   },
@@ -149,6 +153,7 @@ Game = {
       }
 
     }
+    Game.charcterCheckConditions(character);
     Session.set('GameData', this);
   },
   characterHeal: function(character, healPower, modifiers){
@@ -165,10 +170,12 @@ Game = {
       result.success = false;
       Turn.log = Turn.log + '<br/>Heal missed';
     }
+    Game.charcterCheckConditions(character);
+    Session.set('GameData', this);
     return result;
   },
   characterRemedy: function(character, attackPower, modifiers){
-
+    return;
   },
   characterDefend: function(character, attackPower, modifiers){
     var result = {};
@@ -186,7 +193,7 @@ Game = {
       Turn.log = Turn.log + '<br/>Hit '+character.characterLabel;
       Turn.log = Turn.log + '<br/>'+character.characterLabel+' lost '+attackValue+' health';
       result.success = true;
-      if(typeof modifiers.effects === Array){
+      if(Array.isArray(modifiers.effects)){
         for(var e = 0; e < modifiers.effects.length; e++){
           Game.characterSetEffect(character, modifiers.effects[e]);
         }
@@ -206,6 +213,7 @@ Game = {
       result.success = false;
 
     }
+    Game.charcterCheckConditions(character);
     Session.set('TurnData', Turn);
     Session.set('GameData', this);
     return result;
@@ -228,39 +236,261 @@ Game = {
 
   characterUnsetEffect: function(character, effectId){
     var effect =  Effect(Effects.findOne(effectId));
-    character.effects.push(effect);
+    console.log('unseting '+effectId);
     var effectResults = Game.characterProcessEffect(character, effect.end);
     for(var e = 0; e < character.effects.length; e++){
       if(character.effects[e].id == effectId){
         var effectKey = e;
       }
     }
-
-    character.effects.splice(e,1);
+    console.log('Effect key: '+effectKey);
+    character.effects = character.effects.splice(e,1);
 
     Session.set('TurnData', Turn);
     Session.set('GameData', this);
   },
 
   characterProcessEffect: function(character, effectRules){
-    for(var e = 0; e < effectRules.length; e++){
-      var effect = effectRules[e];
+    if(Array.isArray(effectRules)){
+      for(var e = 0; e < effectRules.length; e++){
+        var effect = effectRules[e];
 
-      if(effect.operation === '-'){
-        character[effect.key] = character[effect.key] - effect.value;
+        if(effect.operation === '-'){
+          character[effect.key] = character[effect.key] - effect.value;
+        }
+
+        if(effect.operation === '+'){
+          character[effect.key] = character[effect.key] + effect.value;
+        }
+
+        if(effect.operation === '='){
+          character[effect.key] = effect.value;
+        }
+
+        if(character[effect.key] < 0){
+          character[effect.key] = 0;
+        }
+        if(character.health == 0){
+          Turn.log = Turn.log + '<br/>'+character.characterLabel+' has fallen';
+        }
+
       }
+    }
+    Game.charcterCheckConditions(character);
+    Session.set('TurnData', Turn);
+    Session.set('GameData', this);
+  },
 
-      if(effect.operation === '+'){
-        character[effect.key] = character[effect.key] + effect.value;
+  charcterCheckConditions: function(character){
+    console.log('Checking conditions');
+    for( var c = 0; c < character.conditions.length; c++){
+      var condition = character.conditions[c];
+      console.log('#'+condition.id);
+      if(condition.type === 'stat'){
+        console.log('Condition type == stat');
+        if(condition.compare === '<='){
+          console.log('Compare is <=');
+          console.log('Key: '+condition.key);
+          console.log('Trigger Value: '+condition.value);
+          console.log('Condition Value: '+character[condition.key]);
+          console.log('Do we already have this condition?')
+          console.log(character.activeConditions.indexOf(condition.id));
+
+          if(character[condition.key] <= condition.value && character.activeConditions.indexOf(condition.id) === -1){
+            character.activeConditions.push(condition.id);
+            console.log('Condition Triggered');
+            Game.processCharacterConditionResults(character, condition.results);
+          }else if(character[condition.key] >= condition.value && character.activeConditions.indexOf(condition.id) >= 0){
+            for(var acc = 0; acc < character.activeConditions.length; acc++){
+              if(character.activeConditions[acc] === condition.id){
+                var conditionKey = acc;
+              }
+            }
+            if(conditionKey >= 0 ){
+              console.log('Remove Condition');
+              character.activeConditions.splice(conditionKey,1);
+              Game.unprocessCharacterConditionResults(character, condition.results);
+            }
+          }
+        }else if(condition.compare === '>='){
+          if(character[condition.key] >= condition.value && character.activeConditions.indexOf(condition.id) === -1){
+            console.log('Condition Triggered');
+            character.activeConditions.push(condition.id);
+            Game.processCharacterConditionResults(character, condition.results);
+          }else if(character[condition.key] <= condition.value && character.activeConditions.indexOf(condition.id) >= 0){
+            for(var acc = 0; acc < character.activeConditions.length; acc++){
+              if(character.activeConditions[acc] === condition.id){
+                var conditionKey = acc;
+              }
+            }
+            if(conditionKey >= 0){
+              console.log('Remove Condition');
+              character.activeConditions.splice(conditionKey,1);
+              Game.unprocessCharacterConditionResults(character, condition.results);
+            }
+          }
+        }else if(condition.compare === '='){
+          if(character[condition.key] == condition.value && character.activeConditions.indexOf(condition.id) === -1){
+            console.log('Condition Triggered');
+            character.activeConditions.push(condition.id);
+            Game.processCharacterConditionResults(character, condition.results);
+          }else if(character[condition.key] != condition.value && character.activeConditions.indexOf(condition.id) >= 0){
+            for(var acc = 0; acc < character.activeConditions.length; acc++){
+              if(character.activeConditions[acc] === condition.id){
+                var conditionKey = acc;
+              }
+            }
+            if(conditionKey >= 0){
+              console.log('Remove Condition');
+              character.activeConditions.splice(conditionKey,1);
+              Game.unprocessCharacterConditionResults(character, condition.results);
+            }
+          }
+        }
+
       }
-
-      if(effect.operation === '='){
-        character[effect.key] = effect.value;
-      }
-
     }
     Session.set('TurnData', Turn);
     Session.set('GameData', this);
+  },
+
+  processCharacterConditionResults: function(character, conditionResult){
+    var singleStats = ['value', 'actions', 'movement', 'dodge', 'armor'];
+    for(var ss = 0; ss < singleStats.length; ss++){
+      if(conditionResult[singleStats[ss]] !== undefined){
+        if(conditionResult[singleStats[ss]].operation === '-'){
+          character[singleStats[ss]] = character[singleStats[ss]] - conditionResult[singleStats[ss]].value;
+        }else if(conditionResult[singleStats[ss]].operation === '+'){
+          character[singleStats[ss]] = character[singleStats[ss]] + conditionResult[singleStats[ss]].value;
+        }
+      }
+    }
+
+    if(conditionResult.types !== undefined){
+      for(var lt = 0; lt < conditionResult.types.length; lt++){
+        if(character.types.indexOf(conditionResult.types[lt]) === -1){
+          character.types.push(conditionResult.types[lt]);
+        }
+      }
+    }
+
+    if(conditionResult.immunities !== undefined){
+      for(var li = 0; li < conditionResult.immunities.length; li++){
+        if(character.immunities.indexOf(conditionResult.immunities[li]) === -1){
+          character.immunities.push(conditionResult.immunities[li]);
+        }
+      }
+    }
+
+    if(conditionResult.attacks !== undefined){
+      for(var at = 0; at < conditionResult.attacks.length; at++){
+        var attack = conditionResult.attacks[at];
+        for( var cat = 0; cat < character.attacks.length; cat++){
+          if(character.attacks[cat]._id === attack._id){
+            var charactersAttack = character.attacks[cat];
+            var attackFields = ['name', 'range', 'status', 'actions', 'area', 'accuracy', 'effects', 'power'];
+            for( var attackFieldCount = 0; attackFieldCount < attackFields.length; attackFieldCount++){
+              if(attack[attackFields[attackFieldCount]] !== undefined){
+                if(attack[attackFields[attackFieldCount]].operation === '-'){
+                  charactersAttack[attackFields[attackFieldCount]] = charactersAttack[attackFields[attackFieldCount]] - attack[attackFields[attackFieldCount]].value;
+                }else if(attack[attackFields[attackFieldCount]].operation === '+'){
+                  charactersAttack[attackFields[attackFieldCount]] = charactersAttack[attackFields[attackFieldCount]] + attack[attackFields[attackFieldCount]].value;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if(conditionResult.abilities !== undefined){
+      for(var ab = 0; ab < conditionResult.abilities.length; ab++){
+        var ability = conditionResult.abilities[ab];
+        for( var cab = 0; cab < character.abilities.length; cab++){
+          if(character.abilities[cab]._id === ability._id){
+            var charactersAbilities = character.abilities[cab];
+            var abilitiesFields = ['name', 'range', 'status', 'actions', 'area', 'accuracy', 'effects', 'power'];
+            for( var abilitiesFieldCount = 0; abilitiesFieldCount < abilitiesFields.length; abilitiesFieldCount++){
+              if(ability[abilitiesFields[abilitiesFieldCount]] !== undefined){
+
+                if(ability[abilitiesFields[abilitiesFieldCount]].operation === '-'){
+                  charactersAbilities[abilitiesFields[attackFieldCount]] = charactersAbilities[abilitiesFields[attackFieldCount]] - ability[abilitiesFields[abilitiesFieldCount]].value;
+                }else if(ability[abilitiesFields[abilitiesFieldCount]].operation === '+'){
+                  charactersAbilities[abilitiesFields[attackFieldCount]] = charactersAbilities[abilitiesFields[attackFieldCount]] + ability[abilitiesFields[abilitiesFieldCount]].value;
+                }
+
+              }
+            }
+          }
+        }
+      }
+    }
+
+    Session.set('TurnData', Turn);
+    Session.set('GameData', this);
+
+  },
+
+
+  unprocessCharacterConditionResults: function(character, conditionResult){
+    var singleStats = ['value', 'actions', 'movement', 'dodge', 'armor'];
+    for(var ss = 0; ss < singleStats.length; ss++){
+      if(conditionResult[singleStats[ss]] !== undefined){
+        if(conditionResult[singleStats[ss]].operation === '-'){
+          character[singleStats[ss]] = character[singleStats[ss]] + conditionResult[singleStats[ss]].value;
+        }else if(conditionResult[singleStats[ss]].operation === '+'){
+          character[singleStats[ss]] = character[singleStats[ss]] - conditionResult[singleStats[ss]].value;
+        }
+      }
+    }
+
+    if(conditionResult.attacks !== undefined){
+      for(var at = 0; at < conditionResult.attacks.length; at++){
+        var attack = conditionResult.attacks[at];
+        for( var cat = 0; cat < character.attacks.length; cat++){
+          if(character.attacks[cat]._id === attack._id){
+            var charactersAttack = character.attacks[cat];
+            var attackFields = ['name', 'range', 'status', 'actions', 'area', 'accuracy', 'effects', 'power'];
+            for( var attackFieldCount = 0; attackFieldCount < attackFields.length; attackFieldCount++){
+              if(attack[attackFields[attackFieldCount]] !== undefined){
+                if(attack[attackFields[attackFieldCount]].operation === '-'){
+                  charactersAttack[attackFields[attackFieldCount]] = charactersAttack[attackFields[attackFieldCount]] + attack[attackFields[attackFieldCount]].value;
+                }else if(attack[attackFields[attackFieldCount]].operation === '+'){
+                  charactersAttack[attackFields[attackFieldCount]] = charactersAttack[attackFields[attackFieldCount]] - attack[attackFields[attackFieldCount]].value;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if(conditionResult.abilities !== undefined){
+      for(var ab = 0; ab < conditionResult.abilities.length; ab++){
+        var ability = conditionResult.abilities[ab];
+        for( var cab = 0; cab < character.abilities.length; cab++){
+          if(character.abilities[cab]._id === ability._id){
+            var charactersAbilities = character.abilities[cab];
+            var abilitiesFields = ['name', 'range', 'status', 'actions', 'area', 'accuracy', 'effects', 'power'];
+            for( var abilitiesFieldCount = 0; abilitiesFieldCount < abilitiesFields.length; abilitiesFieldCount++){
+              if(ability[abilitiesFields[abilitiesFieldCount]] !== undefined){
+
+                if(ability[abilitiesFields[abilitiesFieldCount]].operation === '-'){
+                  charactersAbilities[abilitiesFields[attackFieldCount]] = charactersAbilities[abilitiesFields[attackFieldCount]] + ability[abilitiesFields[abilitiesFieldCount]].value;
+                }else if(ability[abilitiesFields[abilitiesFieldCount]].operation === '+'){
+                  charactersAbilities[abilitiesFields[attackFieldCount]] = charactersAbilities[abilitiesFields[attackFieldCount]] - ability[abilitiesFields[abilitiesFieldCount]].value;
+                }
+
+              }
+            }
+          }
+        }
+      }
+    }
+
+    Session.set('TurnData', Turn);
+    Session.set('GameData', this);
+
   },
 
 };

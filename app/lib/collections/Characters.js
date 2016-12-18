@@ -135,6 +135,10 @@ Schema.ability = new SimpleSchema({
 
 
 Schema.condition = new SimpleSchema({
+      "id": {
+        type: Number,
+        label: "condition ID"
+      },
       "type": {
         type: String,
         label: "Type"
@@ -155,36 +159,71 @@ Schema.condition = new SimpleSchema({
         type: Object,
         label: "Results"
       },
-        "results.maxHealth": {
-          type: Number,
-          label: "Max Health",
-          optional: true,
-        },
         "results.actions": {
-          type: Number,
+          type: Object,
           label: "Actions",
           optional: true,
         },
+          "results.actions.operation": {
+            type: String,
+            optional: true,
+          },
+          "results.actions.value": {
+            type: Number,
+            optional: true,
+          },
         "results.movement": {
-          type: Number,
+          type: Object,
           label: "Movement",
           optional: true,
         },
+          "results.movement.operation": {
+            type: String,
+            optional: true,
+          },
+          "results.movement.value": {
+            type: Number,
+            optional: true,
+          },
         "results.dodge": {
-          type: Number,
+          type: Object,
           label: "Dodge",
           optional: true,
         },
+          "results.dodge.operation": {
+            type: String,
+            optional: true,
+          },
+          "results.dodge.value": {
+            type: Number,
+            optional: true,
+          },
         "results.armor": {
-          type: Number,
+          type: Object,
           label: "Armor",
           optional: true,
         },
+          "results.armor.operation": {
+            type: String,
+            optional: true,
+          },
+          "results.armor.value": {
+            type: Number,
+            optional: true,
+          },
         "results.types": {
           type: Array,
           optional: true,
         },
           "results.types.$": {
+            type: Object,
+            optional: true
+          },
+          "results.types.$.operation": {
+            type: String,
+            optional: true
+          },
+          "results.types.$.value": {
             type: String,
             optional: true
           },
@@ -193,25 +232,212 @@ Schema.condition = new SimpleSchema({
           optional: true,
         },
           "results.immunities.$": {
-            type: String,
+            type: Object,
             optional: true
           },
+            "results.immunities.$.operation": {
+              type: String,
+              optional: true
+            },
+            "results.immunities.$.value": {
+              type: String,
+              optional: true
+            },
         "results.attacks": {
           type: Array,
           label: "Attacks",
           optional: true
         },
           "results.attacks.$": {
-            type: Schema.attack
+            type: Object,
+            optional: true,
           },
+            "results.attacks.$._id": {
+              type: String,
+              optional: true,
+            },
+            "results.attacks.$.range": {
+              type: Object,
+              optional: true
+            },
+              "results.attacks.$.range.operation": {
+                type: String,
+                optional: true
+              },
+              "results.attacks.$.range.value": {
+                type: Number,
+                optional: true
+              },
+            "results.attacks.$.status": {
+              type: Object,
+              optional: true
+            },
+              "results.attacks.$.status.operation": {
+                type: String,
+                optional: true
+              },
+              "results.attacks.$.status.value": {
+                type: String,
+                optional: true
+              },
+            "results.attacks.$.actions": {
+              type: Object,
+              optional: true
+            },
+              "results.attacks.$.actions.operation": {
+                type: String,
+                optional: true
+              },
+              "results.attacks.$.actions.value": {
+                type: Number,
+                optional: true
+              },
+            "results.attacks.$.area": {
+              type: Object,
+              optional: true
+            },
+              "results.attacks.$.area.operation": {
+                type: String,
+                optional: true
+              },
+              "results.attacks.$.area.value": {
+                type: Number,
+                optional: true
+              },
+            "results.attacks.$.accuracy": {
+              type: Object,
+              optional: true
+            },
+              "results.attacks.$.accuracy.operation": {
+                type: String,
+                optional: true
+              },
+              "results.attacks.$.accuracy.value": {
+                type: Number,
+                optional: true
+              },
+            "results.attacks.$.effects": {
+              type: Array,
+              optional: true
+            },
+            "results.attacks.$.types": {
+              type: Array,
+              optional: true
+            },
+            "results.attacks.$.power": {
+              type: Array,
+              optional: true
+            },
+              "results.attacks.$.power.$": {
+                type: Object,
+                optional: true
+              },
+                "results.attacks.$.power.$.options": {
+                  type: String,
+                  optional: true
+                },
+                "results.attacks.$.power.$.multiplier": {
+                  type: Number,
+                  optional: true
+                },
+
         "results.abilities": {
           type: Array,
           label: "Abilities",
           optional: true
         },
-          "results.abilities.$": {
-            type: Schema.ability
+        "results.abilities.$": {
+          type: Object,
+          optional: true,
+        },
+          "results.abilities.$._id": {
+            type: String,
+            optional: true,
           },
+          "results.abilities.$.range": {
+            type: Object,
+            optional: true
+          },
+            "results.abilities.$.range.operation": {
+              type: String,
+              optional: true
+            },
+            "results.abilities.$.range.value": {
+              type: Number,
+              optional: true
+            },
+          "results.abilities.$.status": {
+            type: Object,
+            optional: true
+          },
+            "results.abilities.$.status.operation": {
+              type: String,
+              optional: true
+            },
+            "results.abilities.$.status.value": {
+              type: String,
+              optional: true
+            },
+          "results.abilities.$.actions": {
+            type: Object,
+            optional: true
+          },
+            "results.abilities.$.actions.operation": {
+              type: String,
+              optional: true
+            },
+            "results.abilities.$.actions.value": {
+              type: Number,
+              optional: true
+            },
+          "results.abilities.$.area": {
+            type: Object,
+            optional: true
+          },
+            "results.abilities.$.area.operation": {
+              type: String,
+              optional: true
+            },
+            "results.abilities.$.area.value": {
+              type: Number,
+              optional: true
+            },
+          "results.abilities.$.accuracy": {
+            type: Object,
+            optional: true
+          },
+            "results.abilities.$.accuracy.operation": {
+              type: String,
+              optional: true
+            },
+            "results.abilities.$.accuracy.value": {
+              type: Number,
+              optional: true
+            },
+          "results.abilities.$.effects": {
+            type: Array,
+            optional: true
+          },
+          "results.abilities.$.types": {
+            type: Array,
+            optional: true
+          },
+          "results.abilities.$.power": {
+            type: Array,
+            optional: true
+          },
+            "results.abilities.$.power.$": {
+              type: Object,
+              optional: true
+            },
+              "results.abilities.$.power.options": {
+                type: String,
+                optional: true
+              },
+              "results.abilities.$.power.multiplier": {
+                type: Number,
+                optional: true
+              },
 });
 
 

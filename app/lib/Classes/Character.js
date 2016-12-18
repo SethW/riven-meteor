@@ -12,7 +12,6 @@ Character = function Character(characterId, characterLabel, data){
 	character.stats.healedCount = 0;
 	character.stats.healCount = 0;
 
-
 	character.health = data.maxHealth;
 	character.maxHealth = data.maxHealth;
 	character.movement = data.movement;
@@ -29,7 +28,7 @@ Character = function Character(characterId, characterLabel, data){
 	character.conditions = data.conditions;
 
 	character.effects = [];
-
+  character.activeConditions = [];
 
   character.findAction = function(actionString){
     for(var at = 0; a < self.attacks.length; at++){
