@@ -48,8 +48,11 @@ Template.controls.events({
     var speechController = document.querySelector('#speech-controller');
     speechController.start();
 
+    speechController.addEventListener('end', function(e) {
+      speechController.start();
+    });
+
     speechController.addEventListener('result', function(e) {
-      console.log(e.detail.result);
       if(/^(controller).+/ig.test(e.detail.result) && !waitingForConfirm){
         var input = $.trim(e.detail.result.replace(/^(controller)/ig, ''));
         $('#controller').val(input);
