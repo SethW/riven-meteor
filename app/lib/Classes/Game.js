@@ -18,7 +18,7 @@ Game = {
   findCharacter: function(characterLabel){
     for(var p = 0; p < this.players.length; p++){
       for(var c = 0; c < this.players[p].characters.length; c++){
-        if(this.players[p].characters[c].characterLabel === characterLabel){
+        if(new RegExp('('+this.players[p].characters[c].characterLabel+')', 'ig').test(characterLabel)){
           return this.players[p].characters[c];
         }
       }

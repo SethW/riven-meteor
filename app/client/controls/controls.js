@@ -6,6 +6,7 @@ Template.controls.rendered = function() {
       Router.go('/');
     }
   }
+
 };
 
 Template.controls.helpers({
@@ -40,5 +41,32 @@ Template.controls.events({
     }else if(Turn.step === 'activate'){
       Turn.takeAction(command);
     }
+  },
+  'click #start-voice': function(e, instance){
+    var waitingForConfirm = false;
+
+    var speechController = document.querySelector('#speech-controller');
+    speechController.start();
+
+    speechController.addEventListener('result', function(e) {
+      console.log(e.detail.result);
+      if(/^(controller).+/ig.test(e.detail.result) && !waitingForConfirm){
+        var input = $.trim(e.detail.result.replace(/^(controller)/ig, ''));
+        $('#controller').val(input);
+        Meteor.call('say', input+'. Confirm?');
+        waitingForConfirm = true;
+
+      }else if(waitingForConfirm){
+        if(/(confirm)|(yes)|(affirmative)|(do it)/ig.test(e.detail.result)){
+          console.log('Confirmed!');
+          $('game-control').submit();
+          waitingForConfirm = false;
+        }else if(/(no)|(negative)|(cancel)|(stop)/ig.test(e.detail.result)){
+          console.log('Do not confirm');
+          $('#controller').val('');
+          waitingForConfirm = false;
+        }
+      }
+    });
   },
 });
