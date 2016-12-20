@@ -7,6 +7,7 @@
   "dependencies": {
     "babel-runtime": "6.18.0",
     "meteor-node-stubs": "~0.2.0",
+    "say": "^0.11.0",
     "simpl-schema": "0.0.3",
     "yaml-js": "^0.1.4"
   }

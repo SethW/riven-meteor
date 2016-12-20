@@ -1,6 +1,7 @@
 Game = {
   status: 'uninit',
   players: [],
+  voice: false,
   setup: function(){
     this.status = 'setup';
     Session.set('GameData', this);
@@ -15,6 +16,22 @@ Game = {
     this.status = 'running';
     Session.set('GameData', this);
   },
+  enableVoice: function(){
+    this.voice = true;
+    Session.set('GameData', this);
+  },
+  disableVoice: function(){
+    this.voice = false;
+    Session.set('GameData', this);
+  },
+  toggleVoice: function(){
+    if(this.voice){
+      this.voice = false;
+    }else{
+      this.voice = true;
+    }
+    Session.set('GameData', this);
+  },
   findCharacter: function(characterLabel){
     for(var p = 0; p < this.players.length; p++){
       for(var c = 0; c < this.players[p].characters.length; c++){
@@ -23,6 +40,26 @@ Game = {
         }
       }
     }
+  },
+  isNameAvailable: function(name){
+    var invalidNames = ['cancel', 'end', 'activate', 'turn', 'game', 'range', 'effect', 'affect', 'remove'];
+    var effects = Effects.find().fetch();
+    for(var e = 0; e < effects.length; e++){
+      invalidNames.push(effects[e].name);
+    }
+
+    for(var p = 0; p < Game.players.length; p++){
+      for(var c = 0; c < Game.players[p].characters.length; c++){
+        invalidNames.push(Game.players[p].characters[c].characterLabel);
+      }
+    }
+
+    for(var i = 0; i < invalidNames.length; i++){
+      if(new RegExp('('+invalidNames[i]+')').test(name)){
+        return false;
+      }
+    }
+    return true;
   },
   findTargets: function(command){
     var targets = [];
@@ -36,7 +73,7 @@ Game = {
     return targets;
   },
   addCharacter: function(playerId, character){
-    this.players[playerId].addCharacter(character);
+    this.players[playerId].characters.push(character);
     Session.set('GameData', this);
   },
   addPlayer: function(player){
@@ -203,6 +240,9 @@ Game = {
         result.kill = true;
         character.health = 0;
         Turn.log = Turn.log + '<br/>'+character.characterLabel+' has fallen';
+        if(Game.voice){
+          Meteor.call('say', character.characterLabel+' has fallen');
+        }
       }else{
         character.health = character.health - attackValue;
       }
@@ -236,14 +276,12 @@ Game = {
 
   characterUnsetEffect: function(character, effectId){
     var effect =  Effect(Effects.findOne(effectId));
-    console.log('unseting '+effectId);
     var effectResults = Game.characterProcessEffect(character, effect.end);
     for(var e = 0; e < character.effects.length; e++){
       if(character.effects[e].id == effectId){
         var effectKey = e;
       }
     }
-    console.log('Effect key: '+effectKey);
     character.effects = character.effects.splice(e,1);
 
     Session.set('TurnData', Turn);
@@ -270,8 +308,11 @@ Game = {
         if(character[effect.key] < 0){
           character[effect.key] = 0;
         }
-        if(character.health == 0){
+        if(character.health === 0){
           Turn.log = Turn.log + '<br/>'+character.characterLabel+' has fallen';
+          if(Game.voice){
+            Meteor.call('say', character.characterLabel+' has fallen');
+          }
         }
 
       }
@@ -282,28 +323,18 @@ Game = {
   },
 
   charcterCheckConditions: function(character){
-    console.log('Checking conditions');
     for( var c = 0; c < character.conditions.length; c++){
       var condition = character.conditions[c];
-      console.log('#'+condition.id);
+      var conditionKey;
       if(condition.type === 'stat'){
-        console.log('Condition type == stat');
         if(condition.compare === '<='){
-          console.log('Compare is <=');
-          console.log('Key: '+condition.key);
-          console.log('Trigger Value: '+condition.value);
-          console.log('Condition Value: '+character[condition.key]);
-          console.log('Do we already have this condition?')
-          console.log(character.activeConditions.indexOf(condition.id));
-
           if(character[condition.key] <= condition.value && character.activeConditions.indexOf(condition.id) === -1){
             character.activeConditions.push(condition.id);
-            console.log('Condition Triggered');
             Game.processCharacterConditionResults(character, condition.results);
           }else if(character[condition.key] >= condition.value && character.activeConditions.indexOf(condition.id) >= 0){
             for(var acc = 0; acc < character.activeConditions.length; acc++){
               if(character.activeConditions[acc] === condition.id){
-                var conditionKey = acc;
+                conditionKey = acc;
               }
             }
             if(conditionKey >= 0 ){
@@ -318,30 +349,27 @@ Game = {
             character.activeConditions.push(condition.id);
             Game.processCharacterConditionResults(character, condition.results);
           }else if(character[condition.key] <= condition.value && character.activeConditions.indexOf(condition.id) >= 0){
-            for(var acc = 0; acc < character.activeConditions.length; acc++){
-              if(character.activeConditions[acc] === condition.id){
-                var conditionKey = acc;
+            for(var accc = 0; accc < character.activeConditions.length; accc++){
+              if(character.activeConditions[accc] === condition.id){
+                conditionKey = accc;
               }
             }
             if(conditionKey >= 0){
-              console.log('Remove Condition');
               character.activeConditions.splice(conditionKey,1);
               Game.unprocessCharacterConditionResults(character, condition.results);
             }
           }
         }else if(condition.compare === '='){
           if(character[condition.key] == condition.value && character.activeConditions.indexOf(condition.id) === -1){
-            console.log('Condition Triggered');
             character.activeConditions.push(condition.id);
             Game.processCharacterConditionResults(character, condition.results);
           }else if(character[condition.key] != condition.value && character.activeConditions.indexOf(condition.id) >= 0){
-            for(var acc = 0; acc < character.activeConditions.length; acc++){
-              if(character.activeConditions[acc] === condition.id){
-                var conditionKey = acc;
+            for(var acccc = 0; acccc < character.activeConditions.length; acccc++){
+              if(character.activeConditions[acccc] === condition.id){
+                conditionKey = acccc;
               }
             }
             if(conditionKey >= 0){
-              console.log('Remove Condition');
               character.activeConditions.splice(conditionKey,1);
               Game.unprocessCharacterConditionResults(character, condition.results);
             }

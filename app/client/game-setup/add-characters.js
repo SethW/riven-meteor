@@ -16,7 +16,8 @@ Template.AddCharacters.events({
     var characterId = $form.find('#character-id').val();
     var characterLabel = $form.find('#character-label').val();
     var baseCharacter = Characters.findOne(characterId);
-    if(typeof baseCharacter !== 'undefined'){
+    var isValidName = Game.isNameAvailable(characterLabel);
+    if(typeof baseCharacter !== 'undefined' && isValidName){
       character = Character(characterId, characterLabel, baseCharacter);
       Game.addCharacter(playerNumber, character);
       $form.find('.form-message').html('Welcome, '+characterLabel+'!');
@@ -26,8 +27,12 @@ Template.AddCharacters.events({
     }
   },
   'click .start-game': function(e, instance){
+    console.log(1);
     e.preventDefault();
+    console.log(2);
     Game.start();
+    console.log(3);
     Router.go('/game');
+    console.log(4);
   },
 });

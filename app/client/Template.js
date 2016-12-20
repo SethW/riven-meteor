@@ -31,3 +31,7 @@ Template.registerHelper('minus', function(a, b) {
 Template.registerHelper('plus', function(a, b) {
   return parseInt(a) + parseInt(b);
 });
+
+Template.registerHelper('isVoiceEnabled', function(a, b) {
+  return Session.get('GameData').voice;
+});

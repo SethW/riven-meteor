@@ -23,6 +23,9 @@ Turn = {
           this.activeCharacter.stats.activateCount++;
 		      this.actionCount = character.actions;
           this.log = 'Activated '+character.characterLabel;
+          if(Game.voice){
+            Meteor.call('say', 'Activated '+character.characterLabel);
+          }
           this.step = 'activate';
           if(Array.isArray(this.activeCharacter.effects)){
             for(var e = 0; e < this.activeCharacter.effects.length; e++){
@@ -34,6 +37,11 @@ Turn = {
         }
       }else{
         this.log = this.log + '<br/>Sorry, couldn\'t find that character';
+      }
+    }
+    if(Game.voice){
+      if(this.step !== 'activate'){
+        Meteor.call('say', 'Error');
       }
     }
     Session.set('GameData', Game);
@@ -98,13 +106,13 @@ Turn = {
             var firstLetterLower;
             var firstLetterUpper;
             var restOfName;
-            for(var e = 0; e < this.activeCharacter.effects.length; e++){
-              effectRegex = new RegExp('(((remove )|(cancel ))([ea]ffect ){0,1})('+this.activeCharacter.effects[e].name+')', 'ig');
+            for(var ee = 0; ee < this.activeCharacter.effects.length; ee++){
+              effectRegex = new RegExp('(((remove )|(cancel ))([ea]ffect ){0,1})('+this.activeCharacter.effects[ee].name+')', 'ig');
               if(effectRegex.test(filterInput.raw)){
-                if(this.activeCharacter.effects[e].removeCosts <= this.actionCount){
-                  this.actionCount = this.actionCount - this.activeCharacter.effects[e].removeCosts;
-                  this.log = this.log + '<br/>'+this.activeCharacter.effects[e].name+' has been removed';
-                  Game.characterUnsetEffect(this.activeCharacter, this.activeCharacter.effects[e].id);
+                if(this.activeCharacter.effects[ee].removeCosts <= this.actionCount){
+                  this.actionCount = this.actionCount - this.activeCharacter.effects[ee].removeCosts;
+                  this.log = this.log + '<br/>'+this.activeCharacter.effects[ee].name+' has been removed';
+                  Game.characterUnsetEffect(this.activeCharacter, this.activeCharacter.effects[ee].id);
                 }else{
                   this.log = this.log + '<br/>You do not have enough actions to do that';
                 }

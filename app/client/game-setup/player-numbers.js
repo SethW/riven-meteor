@@ -13,10 +13,14 @@ Template.PlayerNumbers.events({
     e.preventDefault();
     var $form = $(e.target);
     var numberOfPlayers = $form.find('#player-numbers').val();
+    var enableVoice = $form.find('#enable-voice').is(':checked');
     if(!isNaN(numberOfPlayers) && numberOfPlayers >= 2){
       $form.find('.form-message').html("Yay");
       for(var p = 1; p <= numberOfPlayers; p++){
         Game.addPlayer(Player(p));
+        if(enableVoice){
+          Game.enableVoice();
+        }
         Router.go('add-characters');
       }
     }else{
