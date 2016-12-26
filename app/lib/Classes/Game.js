@@ -18,6 +18,8 @@ Game = {
   },
   enableVoice: function(){
     this.voice = true;
+    console.log('setting voice to enabled');
+    console.log(this);
     Session.set('GameData', this);
   },
   disableVoice: function(){
@@ -65,7 +67,7 @@ Game = {
     var targets = [];
     for(var p = 0; p < this.players.length; p++){
       for(var c = 0; c < this.players[p].characters.length; c++){
-        if(command.search(this.players[p].characters[c].characterLabel) !== -1){
+        if(new RegExp('('+this.players[p].characters[c].characterLabel+')', 'ig').test(command)){
           targets.push(this.players[p].characters[c]);
         }
       }
@@ -85,7 +87,7 @@ Game = {
   characterFindAttack: function(character, inputString){
     if(character.attacks !== undefined){
       for(var at = 0; at < character.attacks.length; at++){
-        if(inputString.search(character.attacks[at].name) !== -1){
+        if(new RegExp('('+character.attacks[at].name+')', 'ig').test(inputString)){
           return character.attacks[at];
         }
       }
@@ -93,7 +95,7 @@ Game = {
 
     if(character.abilities !== undefined){
       for(var ab = 0; ab < character.abilities.length; ab++){
-        if(inputString.search(character.abilities[ab].name) !== -1){
+        if(new RegExp('('+character.abilities[at].name+')', 'ig').test(inputString)){
           return character.abilities[ab];
         }
       }

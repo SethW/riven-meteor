@@ -20,18 +20,19 @@ Template.controls.rendered = function() {
     speechController.addEventListener('result', function(e) {
       console.log(e.detail.result);
       if(Session.get('GameData').voice){
-        if(/^(controller).+/ig.test(e.detail.result) && !Session.get('waitingForConfirm')){
-          var input = $.trim(e.detail.result.replace(/^(controller)/ig, ''));
+        if(/.*(controller).+/ig.test(e.detail.result) && !Session.get('waitingForConfirm')){
+          var input = $.trim(e.detail.result.replace(/.*(controller)/ig, ''));
           $('#controller').val(input);
           Meteor.call('say', input+'. Confirm?');
           Session.set('waitingForConfirm', true);
 
-        }else if(Session.get('waitingForConfirm')){
-          if(/(confirm)|(yes)|(affirmative)|(do it)/ig.test(e.detail.result)){
+        }else if(/.*(controller).+/ig.test(e.detail.result) && Session.get('waitingForConfirm')){
+          if(/.*(controller).*((confirm)|(yes)|(affirmative)|(do it))/ig.test(e.detail.result)){
+            var input = $.trim(e.detail.result.replace(/.*(controller)/ig, ''));
             console.log('Confirmed!');
             $('#game-control').submit();
             Session.set('waitingForConfirm', false);
-          }else if(/(no)|(negative)|(cancel)|(stop)/ig.test(e.detail.result)){
+          }else if(/.*(controller).*((no)|(negative)|(cancel)|(stop))/ig.test(e.detail.result)){
             console.log('Do not confirm');
             $('#controller').val('');
             Session.set('waitingForConfirm', false);
